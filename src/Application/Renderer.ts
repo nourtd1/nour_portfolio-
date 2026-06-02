@@ -52,7 +52,8 @@ export default class Renderer {
         // this.instance.toneMappingExposure = 0.9;
         this.instance.setSize(this.sizes.width, this.sizes.height);
         this.instance.setPixelRatio(Math.min(this.sizes.pixelRatio, 2));
-        this.instance.setClearColor(0x000000, 0.0);
+        // 2026 dark blue-black background (matches the design system).
+        this.instance.setClearColor(0x050810, 1.0);
 
         // Style
         this.instance.domElement.style.position = 'absolute';

@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-01T14:50:19Z",
+  "title": "Design System: Nour'dev Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "phosphor-signal": {
+        "role": "primary",
+        "displayName": "Phosphor Signal",
+        "canonical": "oklch(72% 0.175 162)",
+        "tonalRamp": ["#002E22", "#004D38", "#006E50", "#009070", "#00C896", "#33D5AB", "#66E2C0", "#99EFD5"]
+      },
+      "system-blue": {
+        "role": "secondary",
+        "displayName": "System Blue",
+        "canonical": "oklch(52% 0.18 245)",
+        "tonalRamp": ["#001830", "#002E5A", "#004884", "#0060AF", "#0078D4", "#3393DD", "#66AEE6", "#99C9EF"]
+      },
+      "accent-purple": {
+        "role": "tertiary",
+        "displayName": "Accent Purple",
+        "canonical": "oklch(54% 0.22 270)",
+        "tonalRamp": ["#14127A", "#221FA0", "#312EC8", "#4440D7", "#5E5CE6", "#7E7DEC", "#9E9DF2", "#BEBEF8"]
+      },
+      "accent-orange": {
+        "role": "tertiary",
+        "displayName": "Accent Orange",
+        "canonical": "oklch(65% 0.12 75)",
+        "tonalRamp": ["#2A2200", "#4A3C00", "#6B5500", "#8C6E00", "#C19C00", "#D4B333", "#E7CA66", "#F5E099"]
+      },
+      "shell-black": {
+        "role": "neutral",
+        "displayName": "Shell Black",
+        "canonical": "oklch(8% 0.015 245)",
+        "tonalRamp": ["#020306", "#050810", "#0B1020", "#111830", "#1A2240", "#2A3456", "#3D4A6E", "#576080"]
+      },
+      "desktop-bg": {
+        "role": "neutral",
+        "displayName": "Desktop Background",
+        "canonical": "oklch(96% 0 0)",
+        "tonalRamp": ["#666666", "#888888", "#AAAAAA", "#CCCCCC", "#E5E5E5", "#F3F3F3", "#F8F8F8", "#FDFDFD"]
+      },
+      "ink-primary": {
+        "role": "neutral",
+        "displayName": "Ink Primary",
+        "canonical": "rgba(32, 32, 32, 0.94)",
+        "tonalRamp": ["#0A0A0A", "#141414", "#1E1E1E", "#282828", "#323232", "#4A4A4A", "#666666", "#888888"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Desktop home title — full name in large, tight weight. One use per screen." },
+      "headline": { "displayName": "Headline", "purpose": "Section headings inside Portfolio Hub windows." },
+      "body": { "displayName": "Body", "purpose": "All prose. Max 65–75ch line length." },
+      "label": { "displayName": "Label/Mono", "purpose": "System data only: timestamps, terminal lines, tech-stack, status readouts." },
+      "mono": { "displayName": "Mono", "purpose": "Terminal font. IBM Plex Mono for all machine-readable output." }
+    },
+    "shadows": [
+      {
+        "name": "window-ambient",
+        "value": "0 22px 62px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.72)",
+        "purpose": "Default window resting state in comfort theme."
+      },
+      {
+        "name": "window-focused",
+        "value": "0 26px 76px rgba(0,0,0,0.17), 0 0 0 3px rgba(0,120,212,0.08), inset 0 1px 0 rgba(255,255,255,0.82)",
+        "purpose": "Active focused window. The 3px System Blue ring is the focus indicator."
+      },
+      {
+        "name": "card-hover",
+        "value": "0 14px 28px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.72)",
+        "purpose": "Desktop shortcut and card hover state."
+      },
+      {
+        "name": "taskbar",
+        "value": "0 18px 46px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.75)",
+        "purpose": "Floating taskbar. Sits visually higher than windows."
+      },
+      {
+        "name": "glow-green",
+        "value": "0 0 12px rgba(0,200,150,0.45), 0 0 32px rgba(0,200,150,0.15)",
+        "purpose": "Terminal cursor and active green-accented elements in dark shell only."
+      },
+      {
+        "name": "glow-purple",
+        "value": "0 0 12px rgba(167,139,250,0.40), 0 0 28px rgba(167,139,250,0.12)",
+        "purpose": "Terminal path indicators in dark shell only."
+      }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Default state transitions (background, border, opacity)." },
+      { "name": "ease-spring", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Window open, scale-in, slide-up entrance animations." },
+      { "name": "transition-fast", "value": "150ms cubic-bezier(0.4,0,0.2,1)", "purpose": "Hover states, icon color changes." },
+      { "name": "transition-normal", "value": "250ms cubic-bezier(0.4,0,0.2,1)", "purpose": "Window chrome transitions, taskbar tab changes." },
+      { "name": "transition-slow", "value": "400ms cubic-bezier(0.4,0,0.2,1)", "purpose": "Loading screen fade, overlay transitions." },
+      { "name": "bios-fade-out", "value": "opacity 0.2s ease-in-out, transform 0.2s ease-in-out", "purpose": "BIOS screen exit — scales slightly (1→1.1) as it fades." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "768px", "purpose": "Single-column layout, smaller type, compact taskbar." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary CTA Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary action in Portfolio Hub home. Solid System Blue.",
+      "html": "<button class=\"ds-btn-primary\">View Projects</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 10px; border: 0.5px solid rgba(0,95,168,0.38); background: #0078D4; color: #fff; font-family: 'Inter', system-ui, sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 150ms cubic-bezier(0.4,0,0.2,1), transform 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary:hover { background: #006CBF; transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(0,120,212,0.3); }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action. White-glass, charcoal text.",
+      "html": "<button class=\"ds-btn-ghost\">Experience</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 10px; border: 0.5px solid rgba(0,0,0,0.08); background: rgba(255,255,255,0.82); color: rgba(32,32,32,0.92); font-family: 'Inter', system-ui, sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 150ms cubic-bezier(0.4,0,0.2,1), border-color 150ms, transform 150ms; } .ds-btn-ghost:hover { background: rgba(255,255,255,0.86); border-color: rgba(0,0,0,0.12); transform: translateY(-1px); } .ds-btn-ghost:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(0,120,212,0.2); }"
+    },
+    {
+      "name": "Accent Button (Shell)",
+      "kind": "button",
+      "refersTo": "btn-accent",
+      "description": "Green-accented button for the dark BIOS shell context.",
+      "html": "<button class=\"ds-btn-accent\">Open Portfolio</button>",
+      "css": ".ds-btn-accent { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 12px; background: rgba(0,200,150,0.15); color: #00C896; border: 0.5px solid rgba(0,200,150,0.25); font-family: 'Inter', system-ui, sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-accent:hover { background: rgba(0,200,150,0.22); box-shadow: 0 0 12px rgba(0,200,150,0.45), 0 0 32px rgba(0,200,150,0.15); } .ds-btn-accent:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(0,200,150,0.3); }"
+    },
+    {
+      "name": "Status Badge — Live",
+      "kind": "chip",
+      "refersTo": "badge-live",
+      "description": "Green status chip for live/shipped projects.",
+      "html": "<span class=\"ds-badge-live\">Live</span>",
+      "css": ".ds-badge-live { display: inline-flex; align-items: center; font-family: 'IBM Plex Mono', 'Courier New', monospace; font-size: 10px; font-weight: 500; padding: 3px 9px; border-radius: 9999px; background: rgba(0,200,150,0.15); color: #00C896; border: 0.5px solid rgba(0,200,150,0.25); letter-spacing: 0.04em; white-space: nowrap; }"
+    },
+    {
+      "name": "Status Badge — WIP",
+      "kind": "chip",
+      "refersTo": "badge-live",
+      "description": "Purple chip for in-development projects.",
+      "html": "<span class=\"ds-badge-wip\">In dev</span>",
+      "css": ".ds-badge-wip { display: inline-flex; align-items: center; font-family: 'IBM Plex Mono', 'Courier New', monospace; font-size: 10px; font-weight: 500; padding: 3px 9px; border-radius: 9999px; background: rgba(94,92,230,0.10); color: #5E5CE6; border: 0.5px solid rgba(94,92,230,0.18); letter-spacing: 0.04em; white-space: nowrap; }"
+    },
+    {
+      "name": "Tech Tag",
+      "kind": "chip",
+      "refersTo": "tag-default",
+      "description": "Monospace pill for technology stack labels.",
+      "html": "<span class=\"ds-tag\">React Native</span>",
+      "css": ".ds-tag { display: inline-flex; font-family: 'IBM Plex Mono', 'Courier New', monospace; font-size: 10px; padding: 3px 9px; border-radius: 9999px; font-weight: 400; background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.10); color: rgba(32,32,32,0.68); transition: all 150ms cubic-bezier(0.4,0,0.2,1); letter-spacing: 0.03em; } .ds-tag:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.18); color: rgba(32,32,32,0.94); }"
+    },
+    {
+      "name": "App Window",
+      "kind": "card",
+      "refersTo": "window-card",
+      "description": "Main floating window container. Frosted glass, draggable titlebar.",
+      "html": "<div class=\"ds-window\"><div class=\"ds-window__bar\"><span class=\"ds-window__title\">Portfolio Hub</span><div class=\"ds-window__controls\"><button class=\"ds-window__ctrl ds-window__ctrl--close\">&#x2715;</button></div></div><div class=\"ds-window__body\"><p>Content goes here.</p></div></div>",
+      "css": ".ds-window { background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(248,250,252,0.96)); backdrop-filter: blur(28px) saturate(1.12); -webkit-backdrop-filter: blur(28px) saturate(1.12); border: 0.5px solid rgba(0,0,0,0.08); border-radius: 18px; box-shadow: 0 22px 62px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.72); overflow: hidden; display: flex; flex-direction: column; min-width: 320px; min-height: 200px; } .ds-window__bar { display: flex; align-items: center; justify-content: space-between; height: 46px; padding: 0 8px 0 16px; border-bottom: 0.5px solid rgba(0,0,0,0.07); background: rgba(255,255,255,0.34); cursor: grab; user-select: none; } .ds-window__bar:active { cursor: grabbing; } .ds-window__title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: rgba(32,32,32,0.68); letter-spacing: 0.07em; } .ds-window__controls { display: flex; gap: 4px; } .ds-window__ctrl { width: 38px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border: none; border-radius: 9px; background: transparent; color: rgba(32,32,32,0.70); font-size: 14px; cursor: pointer; transition: background 150ms, color 150ms; } .ds-window__ctrl:hover { background: rgba(0,0,0,0.055); color: rgba(32,32,32,0.94); } .ds-window__ctrl--close:hover { background: rgba(232,17,35,0.92); color: white; } .ds-window__body { padding: 16px; flex: 1; overflow-y: auto; font-family: 'Inter', sans-serif; font-size: 14px; color: rgba(32,32,32,0.94); line-height: 1.65; }"
+    },
+    {
+      "name": "Desktop Shortcut",
+      "kind": "card",
+      "refersTo": "desktop-shortcut",
+      "description": "App launcher card on the OS desktop. Hover lifts with shadow.",
+      "html": "<div class=\"ds-shortcut\"><div class=\"ds-shortcut__glyph ds-shortcut__glyph--green\">PH</div><p class=\"ds-shortcut__name\">Portfolio Hub</p><span class=\"ds-shortcut__desc\">Projects, skills, proof of work</span></div>",
+      "css": ".ds-shortcut { position: relative; padding: 14px; border-radius: 16px; background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(248,250,252,0.82)); border: 0.5px solid rgba(0,0,0,0.07); box-shadow: inset 0 1px 0 rgba(255,255,255,0.66); transition: background 150ms, border-color 150ms, box-shadow 150ms, transform 150ms; cursor: pointer; display: flex; flex-direction: column; } .ds-shortcut:hover { transform: translateY(-2px); border-color: rgba(0,0,0,0.10); box-shadow: 0 14px 28px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.72); } .ds-shortcut__glyph { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; color: white; margin-bottom: 10px; } .ds-shortcut__glyph--green { background: linear-gradient(135deg, #0078D4, #00A2ED); } .ds-shortcut__glyph--purple { background: linear-gradient(135deg, #5E5CE6, #0078D4); } .ds-shortcut__glyph--orange { background: linear-gradient(135deg, #C19C00, #0078D4); } .ds-shortcut__name { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; color: rgba(17,24,39,0.92); line-height: 1.25; margin: 0; } .ds-shortcut__desc { display: block; margin-top: 7px; font-family: 'Inter', sans-serif; font-size: 11px; line-height: 1.35; color: rgba(17,24,39,0.64); }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "window-card",
+      "description": "Form field for contact and search. Focus ring is the primary indicator.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"your@email.com\" />",
+      "css": ".ds-input { width: 100%; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.10); border-radius: 8px; padding: 9px 12px; font-family: 'Inter', system-ui, sans-serif; font-size: 14px; color: rgba(32,32,32,0.94); outline: none; transition: border-color 150ms, box-shadow 150ms, background 150ms; } .ds-input::placeholder { color: rgba(32,32,32,0.46); } .ds-input:focus { border-color: rgba(0,200,150,0.25); box-shadow: 0 0 0 3px rgba(0,200,150,0.15); background: rgba(255,255,255,0.06); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Terminal Room",
+    "overview": "A dark airlock opening into a precision workstation. The 3D BIOS shell is the door — atmospheric, cinematic, phosphor-lit. The light OS interior is the work — operational, scannable, credible. Both surfaces are deliberate. Neither decorates by default.\n\nThe outer shell speaks in terminal emerald on near-void black. The inner windows speak in system white, Inter, and System Blue. The transition between them is the design statement: entering the monitor is crossing a threshold from spectacle to signal. The shell earns the content's credibility; the content earns the shell's ambition.\n\nThis system rejects every form of AI-portfolio comfort: no cream or warm-beige backgrounds, no gradient text, no glassmorphism used decoratively, no SaaS hero-metric layout, no numbered section eyebrows, no tracked all-caps kickers above every heading.",
+    "keyCharacteristics": [
+      "Two distinct visual registers: shell (dark, phosphor) and interior (light, operational)",
+      "Phosphor Signal green (#00C896) is the brand color; System Blue (#0078D4) is the OS interaction color",
+      "Monospace reserved for system readouts, terminal lines, status labels, timestamps, and tech-stack values only",
+      "Glass surfaces in the comfort theme are functional (window chrome, taskbar blur) not decorative",
+      "Motion is purposeful: BIOS typewriter, window open/close, list stagger — no scroll-jacked choreography"
+    ],
+    "rules": [
+      { "name": "The Two-Register Rule", "body": "Phosphor Signal (#00C896) belongs to the dark BIOS shell. System Blue (#0078D4) belongs to the light OS desktop. Mixing them breaks the threshold. Each register has one primary accent; keep them sovereign.", "section": "colors" },
+      { "name": "The Rarity Rule", "body": "Phosphor Signal appears on ≤15% of any light-theme screen. Its rarity in the interior is the point: when it does appear (terminal cursor, a badge), it reads as a deliberate reference back to the shell.", "section": "colors" },
+      { "name": "The Mono Discipline Rule", "body": "Monospace is reserved for system data: terminal lines, stack labels, timestamps, status readouts. The moment it appears in running prose or section headings, it stops reading as 'system voice' and starts reading as 'developer aesthetic costume.'", "section": "typography" },
+      { "name": "The Scale Ratio Rule", "body": "Steps between display (54px) → headline (32px) → title (20px) → body (14px) maintain ≥1.40 ratio. Never compress steps to less than 1.25× — flat scales read as uncommitted.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces at rest carry only the inset bevel highlight. Drop shadows appear on hover or focused state. A page that shadows everything equally has no focal hierarchy.", "section": "elevation" },
+      { "name": "The Register Firewall Rule", "body": "Glow-style box-shadows (colored, radial, bloom-like) belong to the dark shell only. In the comfort theme, all shadows are achromatic (rgba black alpha). A green glow on a white window surface is a register violation.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use Phosphor Signal (#00C896) as the primary accent on dark surfaces and sparingly (≤15% surface area) on light surfaces.",
+      "Do use IBM Plex Mono exclusively for system data: timestamps, terminal output, tech-stack labels, status readouts, and window titles.",
+      "Do verify WCAG AA contrast (4.5:1) on all body text, especially --text-secondary (rgba(32,32,32,0.68)) against #F3F3F3 backgrounds.",
+      "Do use the window focused state (border: 0.5px solid rgba(0,120,212,0.24) + blue ring) to indicate the active window.",
+      "Do provide a prefers-reduced-motion override for every animation.",
+      "Do preserve the 7px solid white border on the BIOS popup dialog.",
+      "Do reserve backdrop-filter blur (28–30px) for the window chrome and taskbar."
+    ],
+    "donts": [
+      "Don't use gradient text (background-clip: text with a gradient fill). Ever.",
+      "Don't use glassmorphism decoratively. Blur surfaces belong to window chrome only.",
+      "Don't display stats in a hero-metric grid layout: big number, small label, gradient accent.",
+      "Don't add tracked all-caps eyebrows above every section.",
+      "Don't use numbered section markers (01 / 02 / 03) as scaffold.",
+      "Don't mix the two elevation languages: no colored glows on light-theme surfaces, no achromatic shadows on the dark shell.",
+      "Don't use a warm-tinted or cream background. Desktop bg is #F3F3F3 — neutral grey, chroma 0.",
+      "Don't display the portfolio as a dark editorial / dev blog: pure black + mono-only + minimal-everything reads as a README, not a portfolio."
+    ]
+  }
+}

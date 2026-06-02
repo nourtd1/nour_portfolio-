@@ -27,7 +27,8 @@ export default class CoffeeSteam {
     setModel() {
         this.model = {};
 
-        this.model.color = '#c9c9c9';
+        // Emerald glow (#00C896) — Nour accent for the steam/glow effect
+        this.model.color = '#00C896';
 
         // Material
         this.model.material = new THREE.ShaderMaterial({

@@ -3,7 +3,7 @@ import Application from '../Application';
 import Camera from '../Camera/Camera';
 import Mouse from '../Utils/Mouse';
 
-const RENDER_WIREFRAME = true;
+const RENDER_WIREFRAME = false;
 
 export default class Decor {
     application: Application;
@@ -31,17 +31,13 @@ export default class Decor {
     createRaycaster() {
         window.addEventListener('mousedown', (event) => {
             event.preventDefault();
-            console.log(this.camera.instance.position);
 
-            console.log(this.mouse);
             const ray = new THREE.Raycaster();
             ray.setFromCamera(
                 { x: this.mouse.x, y: this.mouse.y },
                 this.camera.instance
             );
-            console.log(ray);
             const intersects = ray.intersectObjects(this.scene.children);
-            console.log(intersects);
             // this.raycaster.setFromCamera(this.mouse, this.camera.instance);
             // const intersects = this.raycaster.intersectObjects(
             //     this.scene.children

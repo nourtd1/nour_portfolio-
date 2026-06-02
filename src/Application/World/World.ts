@@ -2,11 +2,7 @@ import Application from '../Application';
 import Resources from '../Utils/Resources';
 import ComputerSetup from './Computer';
 import MonitorScreen from './MonitorScreen';
-import Environment from './Environment';
-import Decor from './Decor';
-import CoffeeSteam from './CoffeeSteam';
-import Cursor from './Cursor';
-import Hitboxes from './Hitboxes';
+import Floor from './Floor';
 import AudioManager from '../Audio/AudioManager';
 export default class World {
     application: Application;
@@ -14,12 +10,9 @@ export default class World {
     resources: Resources;
 
     // Objects in the scene
-    environment: Environment;
-    decor: Decor;
+    floor: Floor;
     computerSetup: ComputerSetup;
     monitorScreen: MonitorScreen;
-    coffeeSteam: CoffeeSteam;
-    cursor: Cursor;
     audioManager: AudioManager;
 
     constructor() {
@@ -28,22 +21,17 @@ export default class World {
         this.resources = this.application.resources;
         // Wait for resources
         this.resources.on('ready', () => {
-            // Setup
-            this.environment = new Environment();
-            this.decor = new Decor();
+            // 2026 scene — only the gaming setup on a dark floor.
+            // Henry's baked Environment, Decor and CoffeeSteam are removed.
+            this.floor = new Floor();
             this.computerSetup = new ComputerSetup();
             this.monitorScreen = new MonitorScreen();
-            this.coffeeSteam = new CoffeeSteam();
             this.audioManager = new AudioManager();
-            // const hb = new Hitboxes();
-            // this.cursor = new Cursor();
         });
     }
 
     update() {
         if (this.monitorScreen) this.monitorScreen.update();
-        if (this.environment) this.environment.update();
-        if (this.coffeeSteam) this.coffeeSteam.update();
         if (this.audioManager) this.audioManager.update();
     }
 }

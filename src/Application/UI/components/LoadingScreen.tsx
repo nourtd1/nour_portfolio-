@@ -17,19 +17,8 @@ const LoadingScreen: React.FC<LoadingProps> = () => {
     const [showLoadingResources, setShowLoadingResources] = useState(false);
     const [doneLoading, setDoneLoading] = useState(false);
     const [webGLError, setWebGLError] = useState(false);
-    const [counter, setCounter] = useState(0);
     const [resources] = useState<string[]>([]);
     const [mobileWarning, setMobileWarning] = useState(window.innerWidth < 768);
-
-    const onResize = () => {
-        if (window.innerWidth < 768) {
-            setMobileWarning(true);
-        } else {
-            setMobileWarning(false);
-        }
-    };
-
-    window.addEventListener('resize', onResize);
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -43,7 +32,21 @@ const LoadingScreen: React.FC<LoadingProps> = () => {
     }, []);
 
     useEffect(() => {
-        eventBus.on('loadedSource', (data) => {
+        const onResize = () => {
+            setMobileWarning(window.innerWidth < 768);
+        };
+
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
+
+    useEffect(() => {
+        const onLoadedSource = (data: {
+            progress: number;
+            toLoad: number;
+            loaded: number;
+            sourceName: string;
+        }) => {
             setProgress(data.progress);
             setToLoad(data.toLoad);
             setLoaded(data.loaded);
@@ -55,12 +58,14 @@ const LoadingScreen: React.FC<LoadingProps> = () => {
             if (resources.length > 8) {
                 resources.shift();
             }
-        });
-    }, []);
+        };
+
+        eventBus.on('loadedSource', onLoadedSource);
+        return () => eventBus.remove('loadedSource', onLoadedSource);
+    }, [resources]);
 
     useEffect(() => {
         setShowLoadingResources(true);
-        setCounter(counter + 1);
     }, [loaded]);
 
     useEffect(() => {
@@ -91,6 +96,21 @@ const LoadingScreen: React.FC<LoadingProps> = () => {
         if (ui) {
             ui.style.pointerEvents = 'none';
         }
+    }, []);
+
+    const openPortfolio = useCallback(() => {
+        const host = window.location.hostname;
+        const isLocalHost =
+            host === 'localhost' ||
+            host === '127.0.0.1' ||
+            host === '0.0.0.0' ||
+            /^(10|127)\./.test(host) ||
+            /^192\.168\./.test(host) ||
+            /^172\.(1[6-9]|2\d|3[0-1])\./.test(host);
+
+        window.location.href = isLocalHost
+            ? 'http://localhost:3000/'
+            : 'https://os.nourdev.com/';
     }, []);
 
     const getSpace = (sourceName: string) => {
@@ -149,16 +169,16 @@ const LoadingScreen: React.FC<LoadingProps> = () => {
                         <div style={styles.logoContainer}>
                             <div>
                                 <p style={styles.green}>
-                                    <b>Heffernan,</b>{' '}
+                                    <b>Abdoulaye,</b>{' '}
                                 </p>
                                 <p style={styles.green}>
-                                    <b>Henry Inc.</b>
+                                    <b>Nour Inc.</b>
                                 </p>
                             </div>
                         </div>
                         <div style={styles.headerInfo}>
-                            <p>Released: 01/13/2000</p>
-                            <p>HHBIOS (C)2000 Heffernan Henry Inc.,</p>
+                            <p>Released: 01/13/2026</p>
+                            <p>NOURBIOS (C)2026 Nour'dev Inc.,</p>
                         </div>
                     </div>
                     <div style={styles.body} className="loading-screen-body">
@@ -195,7 +215,7 @@ const LoadingScreen: React.FC<LoadingProps> = () => {
                             <p>
                                 All Content Loaded, launching{' '}
                                 <b style={styles.green}>
-                                    'Henry Heffernan Portfolio Showcase'
+                                    'NOUR OS v1.0'
                                 </b>{' '}
                                 V1.0
                             </p>
@@ -227,13 +247,13 @@ const LoadingScreen: React.FC<LoadingProps> = () => {
                     <p>But do enjoy what I have done so far :)</p>
                     <div style={styles.spacer} />
                     <div style={styles.spacer} /> */}
-                    <p>Henry Heffernan Portfolio Showcase 2022</p>
+                    <p>Nour OS v1.0 — INITIALIZING...</p>
                     {mobileWarning && (
                         <>
                             <br />
                             <b>
                                 <p style={styles.warning}>
-                                    WARNING: This experience is best viewed on
+                                    WARNING: 3D mode is best viewed on
                                 </p>
                                 <p style={styles.warning}>
                                     a desktop or laptop computer.
@@ -243,20 +263,36 @@ const LoadingScreen: React.FC<LoadingProps> = () => {
                         </>
                     )}
                     <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-                        <p>Click start to begin{'\xa0'}</p>
+                        <p>
+                            Start the 3D room or open the portfolio directly
+                            {'\xa0'}
+                        </p>
                         <span className="blinking-cursor" />
                     </div>
                     <div
                         style={{
                             display: 'flex',
+                            gap: '12px',
+                            flexWrap: 'wrap',
                             justifyContent: 'center',
                             alignItems: 'center',
                             marginTop: '16px',
                         }}
                     >
-                        <div className="bios-start-button" onClick={start}>
+                        <button
+                            className="bios-start-button"
+                            onClick={start}
+                            style={styles.startButton}
+                        >
                             <p>START</p>
-                        </div>
+                        </button>
+                        <button
+                            className="bios-start-button"
+                            onClick={openPortfolio}
+                            style={styles.startButton}
+                        >
+                            <p>OPEN PORTFOLIO</p>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -274,11 +310,19 @@ const LoadingScreen: React.FC<LoadingProps> = () => {
                         <div style={styles.spacer} />
                         <div style={styles.spacer} />
 
-                        <p>WebGL is required to run this site.</p>
+                        <p>WebGL is required to run the 3D room.</p>
                         <p>
-                            Please enable it or switch to a browser which
-                            supports WebGL
+                            You can still open the portfolio content directly.
                         </p>
+                        <div style={styles.webglActions}>
+                            <button
+                                className="bios-start-button"
+                                onClick={openPortfolio}
+                                style={styles.startButton}
+                            >
+                                <p>OPEN PORTFOLIO</p>
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -351,11 +395,23 @@ const styles: StyleSheetCSS = {
         maxWidth: 500,
         // alignItems: 'center',
     },
+    startButton: {
+        color: 'inherit',
+        font: 'inherit',
+    },
+    webglActions: {
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: 24,
+    },
     headerInfo: {
         marginLeft: 64,
     },
     red: {
         color: '#00ff00',
+    },
+    green: {
+        color: '#00C896',
     },
     link: {
         // textDecoration: 'none',

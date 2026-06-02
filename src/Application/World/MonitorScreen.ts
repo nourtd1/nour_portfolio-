@@ -8,11 +8,16 @@ import Sizes from '../Utils/Sizes';
 import Camera from '../Camera/Camera';
 import EventEmitter from '../Utils/EventEmitter';
 
-const SCREEN_SIZE = { w: 1280, h: 1024 };
-const IFRAME_PADDING = 32;
+const SCREEN_SIZE = { w: 1366, h: 768 };
+const SCREEN_RENDER_SCALE = 2;
+const CSS_SCREEN_SIZE = {
+    w: SCREEN_SIZE.w * SCREEN_RENDER_SCALE,
+    h: SCREEN_SIZE.h * SCREEN_RENDER_SCALE,
+};
+const IFRAME_PADDING = 0;
 const IFRAME_SIZE = {
-    w: SCREEN_SIZE.w - IFRAME_PADDING,
-    h: SCREEN_SIZE.h - IFRAME_PADDING,
+    w: CSS_SCREEN_SIZE.w - IFRAME_PADDING * 2,
+    h: CSS_SCREEN_SIZE.h - IFRAME_PADDING * 2,
 };
 
 export default class MonitorScreen extends EventEmitter {
@@ -32,6 +37,7 @@ export default class MonitorScreen extends EventEmitter {
     inComputer: boolean;
     mouseClickInProgress: boolean;
     dimmingPlane: THREE.Mesh;
+    cssScreenSize: THREE.Vector2;
     videoTextures: { [key in string]: THREE.VideoTexture };
 
     constructor() {
@@ -42,19 +48,23 @@ export default class MonitorScreen extends EventEmitter {
         this.sizes = this.application.sizes;
         this.resources = this.application.resources;
         this.screenSize = new THREE.Vector2(SCREEN_SIZE.w, SCREEN_SIZE.h);
+        this.cssScreenSize = new THREE.Vector2(
+            CSS_SCREEN_SIZE.w,
+            CSS_SCREEN_SIZE.h
+        );
         this.camera = this.application.camera;
-        this.position = new THREE.Vector3(0, 950, 255);
-        this.rotation = new THREE.Euler(-3 * THREE.MathUtils.DEG2RAD, 0, 0);
+        // Position of the interactive screen — aligned to the gaming monitor.
+        this.position = new THREE.Vector3(0, 1150, 60);
+        this.rotation = new THREE.Euler(0, 0, 0);
         this.videoTextures = {};
         this.mouseClickInProgress = false;
         this.shouldLeaveMonitor = false;
 
-        // Create screen
+        // Create screen — only the interactive CSS plane (+ its GL occluder).
+        // Henry's CRT texture layers / enclosing planes / dimmer are removed
+        // for the flat 2026 gaming monitor.
         this.initializeScreenEvents();
         this.createIframe();
-        const maxOffset = this.createTextureLayers();
-        this.createEnclosingPlanes(maxOffset);
-        this.createPerspectiveDimmer(maxOffset);
     }
 
     initializeScreenEvents() {
@@ -136,10 +146,10 @@ export default class MonitorScreen extends EventEmitter {
     createIframe() {
         // Create container
         const container = document.createElement('div');
-        container.style.width = this.screenSize.width + 'px';
-        container.style.height = this.screenSize.height + 'px';
+        container.style.width = this.cssScreenSize.width + 'px';
+        container.style.height = this.cssScreenSize.height + 'px';
         container.style.opacity = '1';
-        container.style.background = '#1d2e2f';
+        container.style.background = '#060b14';
 
         // Create iframe
         const iframe = document.createElement('iframe');
@@ -183,28 +193,48 @@ export default class MonitorScreen extends EventEmitter {
         };
 
         // Set iframe attributes
-        // PROD
-        iframe.src = 'https://os.henryheffernan.com/';
+        // PROD - replace with your deployed OS site URL (the portfolio-inner-site build)
+        const PROD_OS_URL = 'https://os.nourdev.com/';
+        const DEV_OS_URL = 'http://localhost:3000/';
+
         /**
-         * Use dev server is query params are present
+         * In local development we automatically point the monitor iframe at the
+         * 2D OS dev server (portfolio-inner-site running on localhost:3000), so
+         * the screen is not blank. In production we use the deployed OS URL.
          *
-         * Warning: This will not work unless the dev server is running on localhost:3000
-         * Also running the dev server causes browsers to freak out over unsecure connections
-         * in the iframe, so it will flag a ton of issues.
+         * You can still force a specific source with the query params:
+         *   ?dev  -> always use the local dev server (localhost:3000)
+         *   ?prod -> always use the production OS URL
          */
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('dev')) {
-            iframe.src = 'http://localhost:3000/';
+        const host = window.location.hostname;
+        const isLocalHost =
+            host === 'localhost' ||
+            host === '127.0.0.1' ||
+            host === '0.0.0.0' ||
+            // local network IPs (e.g. 192.168.x.x, 10.x.x.x) used by the dev server
+            /^(10|127)\./.test(host) ||
+            /^192\.168\./.test(host) ||
+            /^172\.(1[6-9]|2\d|3[0-1])\./.test(host);
+
+        if (urlParams.has('prod')) {
+            iframe.src = `${PROD_OS_URL}?monitor=1`;
+        } else if (urlParams.has('dev') || isLocalHost) {
+            iframe.src = `${DEV_OS_URL}?monitor=1`;
+        } else {
+            iframe.src = `${PROD_OS_URL}?monitor=1`;
         }
-        iframe.style.width = this.screenSize.width + 'px';
-        iframe.style.height = this.screenSize.height + 'px';
+        iframe.style.width = this.cssScreenSize.width + 'px';
+        iframe.style.height = this.cssScreenSize.height + 'px';
         iframe.style.padding = IFRAME_PADDING + 'px';
         iframe.style.boxSizing = 'border-box';
         iframe.style.opacity = '1';
-        iframe.className = 'jitter';
+        iframe.style.filter = 'none';
+        iframe.style.transform = 'translateZ(0)';
+        iframe.style.backfaceVisibility = 'hidden';
         iframe.id = 'computer-screen';
         iframe.frameBorder = '0';
-        iframe.title = 'HeffernanOS';
+        iframe.title = 'NourOS';
 
         // Add iframe to container
         container.appendChild(iframe);
@@ -220,6 +250,7 @@ export default class MonitorScreen extends EventEmitter {
     createCssPlane(element: HTMLElement) {
         // Create CSS3D object
         const object = new CSS3DObject(element);
+        object.scale.setScalar(1 / SCREEN_RENDER_SCALE);
 
         // copy monitor position and rotation
         object.position.copy(this.position);
@@ -238,8 +269,8 @@ export default class MonitorScreen extends EventEmitter {
 
         // Create plane geometry
         const geometry = new THREE.PlaneGeometry(
-            this.screenSize.width,
-            this.screenSize.height
+            this.cssScreenSize.width,
+            this.cssScreenSize.height
         );
 
         // Create the GL plane mesh

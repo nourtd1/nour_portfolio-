@@ -13,7 +13,18 @@ module.exports = {
     devtool: 'source-map',
     plugins: [
         new CopyWebpackPlugin({
-            patterns: [{ from: path.resolve(__dirname, '../static') }],
+            patterns: [
+                {
+                    from: path.resolve(__dirname, '../static'),
+                    globOptions: {
+                        ignore: [
+                            '**/textures/monitor/video/real.mp4',
+                            '**/textures/monitor/layers/png/**',
+                            '**/models/gaming_desktop_pc/**',
+                        ],
+                    },
+                },
+            ],
         }),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, '../src/index.html'),
