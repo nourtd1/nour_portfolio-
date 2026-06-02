@@ -140,13 +140,13 @@ li {
 }
 
 a {
-    color: #0078D4;
+    color: #00C896;
     text-decoration: none;
     transition: opacity 0.15s ease;
 }
 
 a:hover {
-    opacity: 0.75;
+    opacity: 0.80;
 }
 
 .blend {

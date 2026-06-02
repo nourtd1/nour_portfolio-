@@ -45,24 +45,24 @@ const styles: StyleSheetCSS = {
         gap: 6,
         marginBottom: 28,
         paddingBottom: 24,
-        borderBottom: '0.5px solid rgba(0,0,0,0.07)',
+        borderBottom: '0.5px solid rgba(255,255,255,0.07)',
     },
     eyebrow: {
         fontFamily: "'IBM Plex Mono', monospace",
         fontSize: 11,
         letterSpacing: '0.09em',
-        color: '#0078D4',
+        color: '#00C896',
     },
     pageTitle: {
         fontSize: 34,
         fontWeight: 700,
         letterSpacing: '-0.02em',
-        color: 'rgba(17,24,39,0.94)',
+        color: 'rgba(255,255,255,0.92)',
         lineHeight: 1.1,
     },
     pageSubtitle: {
         fontSize: 13,
-        color: 'rgba(32,32,32,0.54)',
+        color: 'rgba(255,255,255,0.44)',
         lineHeight: 1.5,
     },
     categories: {
@@ -79,7 +79,7 @@ const styles: StyleSheetCSS = {
         fontSize: 10,
         letterSpacing: '0.09em',
         textTransform: 'uppercase',
-        color: 'rgba(32,32,32,0.40)',
+        color: 'rgba(255,255,255,0.32)',
     },
 };
 

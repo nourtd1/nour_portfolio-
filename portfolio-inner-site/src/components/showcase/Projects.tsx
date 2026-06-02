@@ -105,24 +105,24 @@ const styles: StyleSheetCSS = {
         gap: 6,
         marginBottom: 28,
         paddingBottom: 24,
-        borderBottom: '0.5px solid rgba(0,0,0,0.07)',
+        borderBottom: '0.5px solid rgba(255,255,255,0.07)',
     },
     eyebrow: {
         fontFamily: "'IBM Plex Mono', monospace",
         fontSize: 11,
         letterSpacing: '0.09em',
-        color: '#0078D4',
+        color: '#00C896',
     },
     pageTitle: {
         fontSize: 34,
         fontWeight: 700,
         letterSpacing: '-0.02em',
-        color: 'rgba(17,24,39,0.94)',
+        color: 'rgba(255,255,255,0.92)',
         lineHeight: 1.1,
     },
     pageSubtitle: {
         fontSize: 13,
-        color: 'rgba(32,32,32,0.54)',
+        color: 'rgba(255,255,255,0.44)',
         lineHeight: 1.5,
     },
     list: {
@@ -148,9 +148,9 @@ const styles: StyleSheetCSS = {
         fontFamily: "'IBM Plex Mono', monospace",
         fontSize: 9,
         letterSpacing: '0.06em',
-        color: '#0078D4',
-        background: 'rgba(0,120,212,0.08)',
-        border: '0.5px solid rgba(0,120,212,0.20)',
+        color: '#00C896',
+        background: 'rgba(0,200,150,0.10)',
+        border: '0.5px solid rgba(0,200,150,0.28)',
         borderRadius: 4,
         padding: '1px 5px',
         verticalAlign: 'middle',
@@ -159,7 +159,7 @@ const styles: StyleSheetCSS = {
         marginTop: 4,
         fontSize: 13,
         lineHeight: 1.6,
-        color: 'rgba(32,32,32,0.64)',
+        color: 'rgba(255,255,255,0.52)',
     },
     links: {
         flexWrap: 'wrap',
@@ -169,6 +169,7 @@ const styles: StyleSheetCSS = {
     link: {
         fontSize: 11,
         letterSpacing: '0.02em',
+        color: '#00C896',
     },
 };
 

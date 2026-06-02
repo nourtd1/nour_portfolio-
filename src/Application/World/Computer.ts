@@ -8,15 +8,10 @@ import Resources from '../Utils/Resources';
 import Debug from '../Utils/Debug';
 
 /**
- * New gaming setup — "Modern Gaming Setup" by zyphur (Sketchfab),
- * licensed CC-BY-4.0. Attribution is required and lives in the Credits
- * window of the 2D OS site.
- *
- * The asset is a separated glTF (scene.gltf + scene.bin + textures/), not a
- * single .glb. GLTFLoader resolves the .bin and textures relative to this
- * path automatically.
+ * Gaming setup model (scene.gltf + scene.bin + textures/).
+ * GLTFLoader resolves .bin and textures relative to this path automatically.
  */
-const GAMING_SETUP_PATH = 'models/modern_gaming_setup/scene.gltf';
+const GAMING_SETUP_PATH = 'models/gaming_setup/scene.gltf';
 
 /* ── Placement (tweak these to line the monitor up with the OS screen) ── */
 /** Largest dimension (scene units) the model should occupy. */
@@ -166,13 +161,14 @@ export default class Computer {
     }
 
     /**
-     * ÉTAPE 3 — Walk every mesh.
-     *
-     * The model uses generic material names (Material.074, …) with no
-     * "led"/"screen" tokens, so we detect emissive parts (the real RGB
-     * LEDs) by their emissive map / emissive color instead of by name.
+     * Walk every mesh and apply neon treatment.
+     * New model material names: "Stoo1", "material", "material_2"
+     * Emissive parts (LEDs): material_2 and Stoo1 carry emissive textures.
      */
     private applyNeonMaterials(model: THREE.Group): void {
+        // Material names in this model that are LED/emissive parts.
+        const LED_MATERIAL_NAMES = ['material_2', 'stoo1'];
+
         model.traverse((child) => {
             if (!(child instanceof THREE.Mesh)) return;
 
@@ -180,16 +176,19 @@ export default class Computer {
                 ? child.material
                 : [child.material];
 
-            const isEmissivePart = materials.some((mat) =>
-                this.materialIsEmissive(mat)
+            const matNames = materials.map((m) => m.name.toLowerCase());
+            const isLedPart = matNames.some((n) =>
+                LED_MATERIAL_NAMES.indexOf(n) !== -1
             );
+            const isEmissivePart =
+                isLedPart || materials.some((mat) => this.materialIsEmissive(mat));
             const isScreenPart = child.name.toLowerCase().includes('screen');
 
             if (isEmissivePart) {
                 this.setMaterial(child, {
                     color: NEON_GREEN.clone(),
                     emissive: NEON_GREEN.clone(),
-                    emissiveIntensity: 0.18,
+                    emissiveIntensity: 0.22,
                     roughness: 0.0,
                     metalness: 0.0,
                 });
@@ -208,15 +207,12 @@ export default class Computer {
             }
 
             if (FLAT_NEON_OVERRIDE) {
-                // Literal spec: flat carbon body, textures discarded.
                 this.setMaterial(child, {
                     color: CARBON.clone(),
                     roughness: 0.3,
                     metalness: 0.8,
                 });
             } else {
-                // Preserve the realistic PBR textures, nudge toward a
-                // darker, more metallic carbon look.
                 materials.forEach((mat) => {
                     if (mat instanceof THREE.MeshStandardMaterial) {
                         mat.metalness = Math.min(1, mat.metalness + 0.3);
