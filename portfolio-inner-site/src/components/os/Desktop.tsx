@@ -68,16 +68,24 @@ const APPLICATIONS: {
     },
 };
 
+// Routes that live inside ShowcaseExplorer — auto-open it on direct URL access.
+const SHOWCASE_ROUTES = ['/about', '/experience', '/skills', '/projects', '/testimonials', '/contact'];
+
 const Desktop: React.FC<DesktopProps> = (props) => {
     const isMonitorMode = new URLSearchParams(window.location.search).has(
         'monitor'
     );
+
+    // If the user lands on a deep route (e.g. /contact), auto-open Portfolio Hub.
+    const initialShowcase = SHOWCASE_ROUTES.some((r) =>
+        window.location.pathname.startsWith(r)
+    );
+
     const [windows, setWindows] = useState<DesktopWindows>({});
-
     const [shortcuts, setShortcuts] = useState<DesktopShortcutProps[]>([]);
-
     const [shutdown, setShutdown] = useState(false);
     const [numShutdowns, setNumShutdowns] = useState(1);
+    const [showcaseAutoOpened, setShowcaseAutoOpened] = useState(false);
 
     useEffect(() => {
         if (shutdown === true) {
@@ -171,7 +179,7 @@ const Desktop: React.FC<DesktopProps> = (props) => {
                 ...prevWindows,
                 [key]: {
                     ...prevWindows[key],
-                    zIndex: 1 + getHighestZIndex(),
+                    zIndex: Math.max(getHighestZIndex() + 1, 20),
                 },
             }));
         },
@@ -190,7 +198,7 @@ const Desktop: React.FC<DesktopProps> = (props) => {
             setWindows((prevState) => ({
                 ...prevState,
                 [key]: {
-                    zIndex: getHighestZIndex() + 1,
+                    zIndex: Math.max(getHighestZIndex() + 1, 20),
                     minimized: false,
                     component: element,
                     name: APPLICATIONS[key].name,
@@ -200,6 +208,23 @@ const Desktop: React.FC<DesktopProps> = (props) => {
         },
         [getHighestZIndex]
     );
+
+    // Auto-open Portfolio Hub when landing on a deep showcase route (/contact, /projects…).
+    useEffect(() => {
+        if (!initialShowcase || showcaseAutoOpened) return;
+        setShowcaseAutoOpened(true);
+        const app = APPLICATIONS['showcase'];
+        addWindow(
+            'showcase',
+            <app.component
+                onInteract={() => onWindowInteract('showcase')}
+                onMinimize={() => minimizeWindow('showcase')}
+                onClose={() => removeWindow('showcase')}
+                key="showcase"
+            />
+        );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [addWindow, initialShowcase, showcaseAutoOpened]);
 
     return !shutdown ? (
         <div
@@ -248,15 +273,17 @@ const Desktop: React.FC<DesktopProps> = (props) => {
                 </div>
             </div>
 
-            {/* Windows */}
+            {/* Windows — each wrapper is a 0×0 absolute anchor so it never
+                affects the desktop layout; the Window itself floats freely. */}
             {Object.keys(windows).map((key) => {
                 const element = windows[key].component;
-                if (!element) return <div key={`win-${key}`}></div>;
+                if (!element) return null;
                 return (
                     <div
                         key={`win-${key}`}
                         style={Object.assign(
                             {},
+                            styles.windowAnchor,
                             { zIndex: windows[key].zIndex },
                             windows[key].minimized && styles.minimized
                         )}
@@ -288,7 +315,7 @@ const styles: StyleSheetCSS = {
         minHeight: '100%',
         flex: 1,
         position: 'relative',
-        overflow: 'hidden',
+        overflow: 'visible',
     },
     monitorDesktop: {},
     shutdown: {
@@ -298,6 +325,14 @@ const styles: StyleSheetCSS = {
     },
     shortcutContainer: {
         position: 'relative',
+    },
+    windowAnchor: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 0,
+        overflow: 'visible',
     },
     minimized: {
         pointerEvents: 'none',

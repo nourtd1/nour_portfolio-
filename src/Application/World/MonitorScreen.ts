@@ -9,7 +9,7 @@ import Camera from '../Camera/Camera';
 import EventEmitter from '../Utils/EventEmitter';
 
 const SCREEN_SIZE = { w: 1366, h: 768 };
-const SCREEN_RENDER_SCALE = 2;
+const SCREEN_RENDER_SCALE = 1;
 const CSS_SCREEN_SIZE = {
     w: SCREEN_SIZE.w * SCREEN_RENDER_SCALE,
     h: SCREEN_SIZE.h * SCREEN_RENDER_SCALE,
@@ -54,7 +54,7 @@ export default class MonitorScreen extends EventEmitter {
         );
         this.camera = this.application.camera;
         // Position of the interactive screen — aligned to the gaming monitor.
-        this.position = new THREE.Vector3(0, 1150, 60);
+        this.position = new THREE.Vector3(0, 1200, 50);
         this.rotation = new THREE.Euler(0, 0, 0);
         this.videoTextures = {};
         this.mouseClickInProgress = false;

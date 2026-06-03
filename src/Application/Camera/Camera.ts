@@ -70,15 +70,21 @@ export default class Camera extends EventEmitter {
             event.preventDefault();
             // @ts-ignore
             if (event.target.id === 'prevent-click') return;
-            // print target and current keyframe
+
+            // Read inComputer from MonitorScreen (reliable shared state).
+            const onMonitor = !!(
+                this.application.world?.monitorScreen?.inComputer
+            );
+
             if (
                 this.currentKeyframe === CameraKey.IDLE ||
                 this.targetKeyframe === CameraKey.IDLE
             ) {
                 this.transition(CameraKey.DESK);
             } else if (
-                this.currentKeyframe === CameraKey.DESK ||
-                this.targetKeyframe === CameraKey.DESK
+                (this.currentKeyframe === CameraKey.DESK ||
+                    this.targetKeyframe === CameraKey.DESK) &&
+                !onMonitor
             ) {
                 this.transition(CameraKey.IDLE);
             }

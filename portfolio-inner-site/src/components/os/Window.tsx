@@ -19,9 +19,22 @@ export interface WindowProps {
     windowBarIcon?: IconName;
     onWidthChange?: (width: number) => void;
     onHeightChange?: (height: number) => void;
+    initialMaximized?: boolean;
 }
 
 const Window: React.FC<WindowProps> = (props) => {
+    const isMonitor = new URLSearchParams(window.location.search).has('monitor');
+
+    const visibleW = window.innerWidth;
+    const visibleH = window.innerHeight;
+
+    const forceMax = isMonitor || props.initialMaximized;
+
+    const initW = forceMax ? visibleW       : Math.min(props.width,  visibleW);
+    const initH = forceMax ? visibleH - 60  : Math.min(props.height, visibleH - 60);
+    const initT = forceMax ? 0 : props.top;
+    const initL = forceMax ? 0 : props.left;
+
     const windowRef = useRef<any>(null);
     const dragRef = useRef<any>(null);
     const contentRef = useRef<any>(null);
@@ -33,25 +46,25 @@ const Window: React.FC<WindowProps> = (props) => {
 
     const resizeRef = useRef<any>(null);
 
-    const [top, setTop] = useState(props.top);
-    const [left, setLeft] = useState(props.left);
+    const [top, setTop] = useState(initT);
+    const [left, setLeft] = useState(initL);
 
     const lastClickInside = useRef(false);
 
-    const [width, setWidth] = useState(props.width);
-    const [height, setHeight] = useState(props.height);
+    const [width, setWidth] = useState(initW);
+    const [height, setHeight] = useState(initH);
 
-    const [contentWidth, setContentWidth] = useState(props.width);
-    const [contentHeight, setContentHeight] = useState(props.height);
+    const [contentWidth, setContentWidth] = useState(initW);
+    const [contentHeight, setContentHeight] = useState(initH);
 
     const [windowActive, setWindowActive] = useState(true);
 
-    const [isMaximized, setIsMaximized] = useState(false);
+    const [isMaximized, setIsMaximized] = useState(forceMax);
     const [preMaxSize, setPreMaxSize] = useState({
-        width,
-        height,
-        top,
-        left,
+        width: props.width,
+        height: props.height,
+        top: props.top,
+        left: props.left,
     });
 
     const [isDragging, setIsDragging] = useState(false);
@@ -189,12 +202,7 @@ const Window: React.FC<WindowProps> = (props) => {
     return (
         <div onMouseDown={onWindowInteract} style={styles.container}>
             <div
-                style={Object.assign({}, styles.window, {
-                    width,
-                    height,
-                    top,
-                    left,
-                })}
+                style={Object.assign({}, styles.window, { width, height, top, left })}
                 ref={windowRef}
             >
                 <div
@@ -326,6 +334,14 @@ const Window: React.FC<WindowProps> = (props) => {
 };
 
 const styles: StyleSheetCSS = {
+    container: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 0,
+        overflow: 'visible',
+    },
     window: {
         position: 'absolute',
     },

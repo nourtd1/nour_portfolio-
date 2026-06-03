@@ -15,11 +15,17 @@ const GAMING_SETUP_PATH = 'models/gaming_setup/scene.gltf';
 
 /* ── Placement (tweak these to line the monitor up with the OS screen) ── */
 /** Largest dimension (scene units) the model should occupy. */
-const MODEL_TARGET_SIZE = 2600;
-/** Horizontal placement of the model (Y is auto-set to rest on the floor). */
-const MODEL_POSITION = new THREE.Vector3(0, 0, 0);
-/** Euler rotation (radians) applied after centering. */
+const MODEL_TARGET_SIZE = 2800;
+/** Extra offset applied AFTER centering (use X to nudge left/right). */
+const MODEL_POSITION = new THREE.Vector3(200, 0, 0);
+/**
+ * No Y rotation — setup faces camera. The chair is hidden dynamically
+ * when the camera approaches (see update()).
+ */
 const MODEL_ROTATION = new THREE.Euler(0, 0, 0);
+
+const CHAIR_FADE_FAR = 7500;
+const CHAIR_FADE_NEAR = 5500;
 
 /* ── Material look ──
  * FLAT_NEON_OVERRIDE = false (default): keep the model's realistic PBR
@@ -42,6 +48,7 @@ export default class Computer {
     bakedModel?: BakedModel;
     model?: THREE.Group;
     lights: THREE.Light[];
+    chairMeshes: THREE.Object3D[];
 
     constructor() {
         this.application = new Application();
@@ -49,6 +56,7 @@ export default class Computer {
         this.resources = this.application.resources;
         this.debug = this.application.debug;
         this.lights = [];
+        this.chairMeshes = [];
 
         // ÉTAPE 4 — scene lights for a modern 2026 RGB rendering.
         this.setLights();
@@ -84,30 +92,38 @@ export default class Computer {
     private onGamingSetupLoaded(gltf: GLTF): void {
         const model = gltf.scene;
 
-        // Center on origin (X/Z), then scale to the target footprint.
-        const box = new THREE.Box3().setFromObject(model);
-        const size = box.getSize(new THREE.Vector3());
-        const center = box.getCenter(new THREE.Vector3());
-
-        const maxDim = Math.max(size.x, size.y, size.z) || 1;
+        // 1 — measure raw bounding box to get scale factor.
+        const rawBox = new THREE.Box3().setFromObject(model);
+        const rawSize = rawBox.getSize(new THREE.Vector3());
+        const maxDim = Math.max(rawSize.x, rawSize.y, rawSize.z) || 1;
         const scale = MODEL_TARGET_SIZE / maxDim;
 
+        // 2 — apply scale + rotation first, THEN measure the transformed box
+        //     so the center/floor values are correct.
         model.scale.setScalar(scale);
         model.rotation.copy(MODEL_ROTATION);
-        // Recenter on X/Z around the origin.
+        model.position.set(0, 0, 0);
+
+        const transformedBox = new THREE.Box3().setFromObject(model);
+        const center = transformedBox.getCenter(new THREE.Vector3());
+
+        // 3 — center on X/Z, keep Y at 0 for now.
         model.position.set(
-            -center.x * scale + MODEL_POSITION.x,
+            -center.x + MODEL_POSITION.x,
             MODEL_POSITION.y,
-            -center.z * scale + MODEL_POSITION.z
+            -center.z + MODEL_POSITION.z
         );
 
-        // ÉTAPE 2 — rest the model on the floor (y = 0): measure the scaled
-        // bounding box and lift it so its lowest point sits at the floor.
+        // 4 — rest the model on the floor: lift so lowest point = y 0.
         const placedBox = new THREE.Box3().setFromObject(model);
         model.position.y -= placedBox.min.y;
 
         // ÉTAPE 3 — material treatment.
         this.applyNeonMaterials(model);
+
+        // Identify chair meshes by name or by being the largest object
+        // on the negative-Z side of the model (behind the desk).
+        this.findChairMeshes(model);
 
         this.model = model;
         this.scene.add(model);
@@ -256,30 +272,102 @@ export default class Computer {
     private setLights(): void {
         RectAreaLightUniformsLib.init();
 
-        // Ambient RGB spill near the machine — emerald.
-        const greenLight = new THREE.PointLight(NEON_GREEN.clone(), 0.08, 2800);
-        greenLight.position.set(450, 950, 850);
+        // Ambient RGB spill near the machine — blue accent.
+        const greenLight = new THREE.PointLight(NEON_GREEN.clone(), 0.06, 2400);
+        greenLight.position.set(-350, 850, 600);
 
         // Rim light behind the machine — violet.
         const purpleLight = new THREE.PointLight(
             new THREE.Color('#5E5CE6'),
-            0.16,
-            4000
+            0.12,
+            3500
         );
-        purpleLight.position.set(-650, 1150, -500);
+        purpleLight.position.set(500, 1000, -400);
 
         // Soft white key light from front-top.
         const keyLight = new THREE.RectAreaLight(
             new THREE.Color('#ffffff'),
-            4.4,
-            1800,
-            1200
+            3.8,
+            1600,
+            1000
         );
-        keyLight.position.set(0, 1750, 1450);
-        keyLight.lookAt(0, 800, 0);
+        keyLight.position.set(0, 1600, 1300);
+        keyLight.lookAt(0, 700, 0);
 
         this.lights.push(greenLight, purpleLight, keyLight);
         this.lights.forEach((light) => this.scene.add(light));
+    }
+
+    /**
+     * Find chair-related meshes by name heuristic. Common names in
+     * gaming setup models: "chair", "seat", "armrest", "wheel", "caster".
+     */
+    private findChairMeshes(model: THREE.Group): void {
+        const CHAIR_KEYWORDS = ['chair', 'seat', 'armrest', 'wheel', 'caster', 'backrest', 'headrest'];
+
+        model.traverse((child) => {
+            const name = child.name.toLowerCase();
+            if (CHAIR_KEYWORDS.some((kw) => name.includes(kw))) {
+                this.chairMeshes.push(child);
+            }
+        });
+
+        // If no named chair parts found, use positional heuristic:
+        // the chair is the cluster of meshes furthest on the +Z side
+        // (behind the desk, facing the camera in this orientation).
+        if (this.chairMeshes.length === 0) {
+            const candidates: { obj: THREE.Object3D; z: number }[] = [];
+            model.traverse((child) => {
+                if (!(child instanceof THREE.Mesh)) return;
+                const worldPos = new THREE.Vector3();
+                child.getWorldPosition(worldPos);
+                candidates.push({ obj: child, z: worldPos.z });
+            });
+
+            if (candidates.length > 0) {
+                candidates.sort((a, b) => b.z - a.z);
+                const maxZ = candidates[0].z;
+                // Take all meshes within 300 units of the furthest Z as "chair"
+                for (const c of candidates) {
+                    if (maxZ - c.z < 300) {
+                        this.chairMeshes.push(c.obj);
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Called each frame — fade chair out as camera gets close, fade in when far.
+     */
+    update(): void {
+        if (this.chairMeshes.length === 0) return;
+
+        const camZ = this.application.camera.instance.position.z;
+        let opacity: number;
+
+        if (camZ >= CHAIR_FADE_FAR) {
+            opacity = 1;
+        } else if (camZ <= CHAIR_FADE_NEAR) {
+            opacity = 0;
+        } else {
+            opacity = (camZ - CHAIR_FADE_NEAR) / (CHAIR_FADE_FAR - CHAIR_FADE_NEAR);
+        }
+
+        const visible = opacity > 0.01;
+
+        for (const obj of this.chairMeshes) {
+            obj.visible = visible;
+            if (obj instanceof THREE.Mesh && obj.material) {
+                const mat = obj.material as THREE.MeshStandardMaterial;
+                if (!mat.transparent) {
+                    mat.transparent = true;
+                }
+                mat.opacity = opacity;
+            }
+        }
     }
 
     /**

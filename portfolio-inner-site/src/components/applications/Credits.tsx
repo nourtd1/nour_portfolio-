@@ -73,12 +73,11 @@ const Credits: React.FC<CreditsProps> = (props) => {
     };
 
     return (
-        // add on resize listener
         <Window
             top={48}
             left={48}
-            width={1100}
-            height={800}
+            width={900}
+            height={700}
             windowTitle="Credits"
             windowBarIcon="windowExplorerIcon"
             closeWindow={props.onClose}

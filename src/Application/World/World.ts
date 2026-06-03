@@ -31,6 +31,7 @@ export default class World {
     }
 
     update() {
+        if (this.computerSetup) this.computerSetup.update();
         if (this.monitorScreen) this.monitorScreen.update();
         if (this.audioManager) this.audioManager.update();
     }

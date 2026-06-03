@@ -19,24 +19,24 @@ export class CameraKeyframeInstance {
 
 const keys: { [key in CameraKey]: CameraKeyframe } = {
     idle: {
-        position: new THREE.Vector3(-5200, 3200, 5200),
-        focalPoint: new THREE.Vector3(0, 780, 0),
+        position: new THREE.Vector3(0, 2200, 6500),
+        focalPoint: new THREE.Vector3(0, 800, 0),
     },
     monitor: {
-        position: new THREE.Vector3(0, 1150, 1600),
-        focalPoint: new THREE.Vector3(0, 1150, 0),
+        position: new THREE.Vector3(0, 1200, 1300),
+        focalPoint: new THREE.Vector3(0, 1200, 50),
     },
     desk: {
-        position: new THREE.Vector3(0, 1150, 1800),
-        focalPoint: new THREE.Vector3(0, 1000, 0),
+        position: new THREE.Vector3(0, 1800, 4800),
+        focalPoint: new THREE.Vector3(0, 900, 0),
     },
     loading: {
         position: new THREE.Vector3(-35000, 35000, 35000),
         focalPoint: new THREE.Vector3(0, -5000, 0),
     },
     orbitControlsStart: {
-        position: new THREE.Vector3(-5200, 3200, 5200),
-        focalPoint: new THREE.Vector3(0, 780, 0),
+        position: new THREE.Vector3(0, 2200, 6500),
+        focalPoint: new THREE.Vector3(0, 800, 0),
     },
 };
 
@@ -57,8 +57,8 @@ export class MonitorKeyframe extends CameraKeyframeInstance {
 
     update() {
         const aspect = this.sizes.height / this.sizes.width;
-        const additionalZoom = this.sizes.width < 768 ? 0 : 750;
-        this.targetPos.z = this.origin.z + aspect * 950 - additionalZoom;
+        const additionalZoom = this.sizes.width < 768 ? 0 : 200;
+        this.targetPos.z = this.origin.z + aspect * 350 - additionalZoom;
         this.position.copy(this.targetPos);
     }
 }
@@ -92,19 +92,19 @@ export class DeskKeyframe extends CameraKeyframeInstance {
     }
 
     update() {
-        const parallaxX = (this.mouse.x - this.sizes.width / 2) * 0.22;
-        const parallaxY = -(this.mouse.y - this.sizes.height / 2) * 0.12;
+        const parallaxX = (this.mouse.x - this.sizes.width / 2) * 0.12;
+        const parallaxY = -(this.mouse.y - this.sizes.height / 2) * 0.06;
 
-        this.targetFoc.x += (parallaxX - this.targetFoc.x) * 0.05;
+        this.targetFoc.x += (parallaxX * 0.4 - this.targetFoc.x) * 0.03;
         this.targetFoc.y +=
-            (this.origin.y - 350 + parallaxY - this.targetFoc.y) * 0.05;
+            (900 + parallaxY * 0.3 - this.targetFoc.y) * 0.03;
 
-        this.targetPos.x += (parallaxX * 0.55 - this.targetPos.x) * 0.025;
+        this.targetPos.x += (parallaxX * 0.3 - this.targetPos.x) * 0.02;
         this.targetPos.y +=
-            (this.origin.y + parallaxY * 0.35 - this.targetPos.y) * 0.025;
+            (this.origin.y + parallaxY * 0.2 - this.targetPos.y) * 0.02;
 
         const aspect = this.sizes.height / this.sizes.width;
-        this.targetPos.z = this.origin.z + aspect * 900 - 600;
+        this.targetPos.z = this.origin.z + aspect * 600;
 
         this.focalPoint.copy(this.targetFoc);
         this.position.copy(this.targetPos);
@@ -124,7 +124,7 @@ export class IdleKeyframe extends CameraKeyframeInstance {
 
     update() {
         this.position.x =
-            Math.sin((this.time.elapsed + 19000) * 0.00008) * this.origin.x;
+            Math.sin((this.time.elapsed + 19000) * 0.00008) * 1800;
         this.position.y =
             Math.sin((this.time.elapsed + 1000) * 0.000004) * 450 +
             this.origin.y;

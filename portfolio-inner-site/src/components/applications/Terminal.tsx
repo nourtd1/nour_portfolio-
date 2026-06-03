@@ -329,7 +329,7 @@ const TerminalApp: React.FC<TerminalAppProps> = (props) => {
     return (
         <Window
             top={40}
-            left={120}
+            left={80}
             width={700}
             height={500}
             windowBarIcon="windowExplorerIcon"

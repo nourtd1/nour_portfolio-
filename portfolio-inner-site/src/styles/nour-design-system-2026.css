@@ -50,14 +50,15 @@
   font-size: 52px;
   line-height: 1;
   letter-spacing: -0.02em;
-  color: rgba(255, 255, 255, 0.94);
+  color: #ffffff;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
 }
 
 .hub-home__title {
   margin-top: 16px;
   font-size: 17px;
   line-height: 1.45;
-  color: rgba(255, 255, 255, 0.52);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .hub-home__summary {
@@ -65,7 +66,7 @@
   margin-top: 22px;
   font-size: 16px;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .hub-home__actions {
@@ -81,7 +82,7 @@
   border-radius: 10px;
   border: 0.5px solid rgba(255, 255, 255, 0.10);
   background: rgba(255, 255, 255, 0.07);
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(255, 255, 255, 0.92);
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 600;
@@ -142,7 +143,7 @@
 .hub-home__focus span {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.36);
+  color: rgba(255, 255, 255, 0.58);
 }
 
 .hub-home__stats {
@@ -163,7 +164,7 @@
 .hub-home__stat span {
   font-size: 24px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.90);
+  color: #ffffff;
 }
 
 .hub-home__stat small {
@@ -171,7 +172,7 @@
   font-family: var(--font-mono);
   font-size: 10px;
   line-height: 1.35;
-  color: rgba(255, 255, 255, 0.34);
+  color: rgba(255, 255, 255, 0.60);
 }
 
 .hub-home__focus {
@@ -303,10 +304,17 @@
   padding: 0;
 }
 
-html, body, #root {
+html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  position: relative;
 }
 
 body {
@@ -369,7 +377,7 @@ body {
   gap: 28px;
   padding: 48px 52px 80px 52px;
   pointer-events: none;
-  z-index: 3;
+  z-index: 1;
   max-width: 620px;
 }
 
@@ -455,7 +463,8 @@ body {
 
 .desktop-launchpad {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, auto);
   gap: 10px;
   padding: 12px;
   border-radius: 18px;
@@ -471,11 +480,9 @@ body {
 }
 
 .monitor-calibrated {
-  width: 50%;
-  height: 50%;
-  min-height: 50% !important;
-  transform: scale(2);
-  transform-origin: top left;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
 /* ─────────────────────────────────────────────
@@ -1260,6 +1267,15 @@ body {
 /* ─────────────────────────────────────────────
    21. ANIMATIONS UTILITAIRES
    ───────────────────────────────────────────── */
+@keyframes barGrow {
+  from { width: 0 !important; opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.skill-bar-fill {
+  animation: barGrow 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
